@@ -1,0 +1,338 @@
+[
+  {
+    "id": "airtable-crud",
+    "name": "Airtable CRUD",
+    "service": "Airtable",
+    "servicecode": "airtable",
+    "description": "List, Add, Edit, Delete records in a selected Airtable base and table.",
+    "auth": {
+      "type": "API_KEY",
+      "flow": "MANUAL",
+      "fields": [
+        {
+          "label": "API Key",
+          "key": "apiKey",
+          "type": "password",
+          "required": true
+        }
+      ]
+    },
+    "inputs": [
+      {
+        "label": "Base",
+        "key": "baseId",
+        "type": "dynamic_dropdown",
+        "required": true,
+        "requiredTogetData": true,
+        "dataSource": {
+          "url": "https://api.airtable.com/v0/meta/bases",
+          "labelField": "name",
+          "valueField": "id"
+        }
+      },
+      {
+        "label": "Table",
+        "key": "tableName",
+        "type": "dynamic_dropdown",
+        "required": true,
+        "requiredTogetData": true,
+        "dependsOn": "baseId",
+        "dataSource": {
+          "url": "https://api.airtable.com/v0/meta/bases/{baseId}/tables",
+          "labelField": "name",
+          "valueField": "name"
+        }
+      },
+      {
+        "label": "Name",
+        "key": "Name",
+        "type": "text",
+        "required": false
+      },
+      {
+        "label": "Email",
+        "key": "Email",
+        "type": "email",
+        "required": false
+      },
+      {
+        "label": "Age",
+        "key": "Age",
+        "type": "number",
+        "required": false
+      },
+      {
+        "label": "Date",
+        "key": "Date",
+        "type": "Date",
+        "required": false
+      },
+      {
+        "label": "Key",
+        "key": "Key",
+        "type": "text",
+        "required": false,
+        "description": "Select attribute and provide its value."
+      },
+      {
+        "label": "Value",
+        "key": "Value",
+        "type": "text",
+        "required": false,
+        "visible": true
+      },
+      {
+        "label": "Additional Info",
+        "key": "jsonview",
+        "type": "json",
+        "required": false,
+        "description": "Provide structured data in JSON format."
+      }
+    ],
+    "output": {
+      "type": "table",
+      "fields": ["Name", "Email", "Age", "Date", "Key", "Value", "jsonview"],
+      "actions": ["delete", "edit"]
+    },
+    "baseurl": "https://api.airtable.com/v0",
+    "setupInstructions": {
+      "enabled": true,
+      "title": "Airtable Setup Instructions",
+      "description": "To use this block, you must complete the following steps in your Airtable account:",
+      "steps": [
+        {
+          "step": 1,
+          "title": "Create an Airtable API Key",
+          "details": "Visit https://airtable.com/account and generate an API Key. This is required to connect with the Airtable API."
+        },
+        {
+          "step": 2,
+          "title": "Create a Workspace",
+          "details": "Log in to Airtable, and create a new Workspace if you don’t already have one."
+        },
+        {
+          "step": 3,
+          "title": "Create a Table with the Following Fields",
+          "details": "Inside the workspace, create a new table (or use an existing one) with the following fields:",
+          "fields": [
+            { "label": "Name", "type": "Single line text" },
+            { "label": "Email", "type": "Email" },
+            { "label": "Age", "type": "Number" },
+            { "label": "Date", "type": "Date" },
+            { "label": "Key", "type": "Single line text" },
+            { "label": "Value", "type": "Single line text" },
+            {
+              "label": "jsonview",
+              "type": "Long text",
+              "description": "For storing JSON data from the JSON editor"
+            }
+          ]
+        },
+        {
+          "step": 4,
+          "title": "Customize Fields (Optional)",
+          "details": "To use different fields, update the 'inputs' section in this block's config file to match your Airtable table. It will automatically reflect in the UI."
+        }
+      ]
+    }
+  },
+  {
+    "id": "gmail_search_emails",
+    "name": "Gmail Search Emails",
+    "description": "Search for emails in your Gmail account",
+    "service": "gmail",
+    "servicecode": "gmail",
+    "auth": {
+      "type": "OAUTH2",
+      "flow": "REDIRECT",
+      "authUrl": "https://accounts.google.com/o/oauth2/v2/auth",
+      "tokenUrl": "https://oauth2.googleapis.com/token",
+      "scopes": "https://www.googleapis.com/auth/gmail.readonly",
+      "redirectUri": "http://localhost:3000/apiblock",
+      "fields": [
+        {
+          "label": "Client ID",
+          "key": "clientId",
+          "type": "text",
+          "required": true
+        },
+        {
+          "label": "Secret ID",
+          "key": "secretId",
+          "type": "text",
+          "required": true
+        }
+      ]
+    },
+    "inputs": [
+      {
+        "name": "query",
+        "key": "query",
+        "label": "Search Query",
+        "type": "text",
+        "required": true,
+        "requiredTogetData": true
+      }
+    ],
+    "output": {
+      "type": "table",
+      "fields": ["From", "Subject", "Date"]
+    },
+    "baseurl": "http://localhost:5000",
+    "setupInstructions": {
+      "enabled": true,
+      "title": "Gmail API Setup Instructions",
+      "description": "To connect your Gmail account and search emails, follow the steps below:",
+      "steps": [
+        {
+          "step": 1,
+          "title": "Create a Google Cloud Project",
+          "details": "Visit https://console.cloud.google.com/ and create a new project or select an existing one."
+        },
+        {
+          "step": 2,
+          "title": "Enable Gmail API",
+          "details": "In the API Library, search for 'Gmail API' and enable it for your project."
+        },
+        {
+          "step": 3,
+          "title": "Create OAuth 2.0 Credentials",
+          "details": "Go to 'APIs & Services > Credentials', click 'Create Credentials' → 'OAuth Client ID'. Choose 'Web application'."
+        },
+        {
+          "step": 4,
+          "title": "Set the Authorized Redirect URI",
+          "details": "Use the following URI: http://localhost:3000/apiblock. This is required for the OAuth flow to work correctly."
+        },
+        {
+          "step": 5,
+          "title": "Copy Client ID and Secret",
+          "details": "After creating the OAuth client, copy the Client ID and Client Secret and enter them into the authentication form on this block."
+        },
+        {
+          "step": 6,
+          "title": "Customize If Needed",
+          "details": "You can reuse this block for other Gmail-compatible apps by changing the Client ID, Secret, or Redirect URI as needed."
+        }
+      ]
+    }
+  },
+  {
+    "id": "google-sheets-crud",
+    "name": "Google Sheets Manager",
+    "service": "GoogleSheets",
+    "servicecode": "googlesheets",
+    "description": "List, Add, Edit, Delete entries in a Google Spreadsheet.",
+    "auth": {
+      "type": "OAUTH2",
+      "flow": "REDIRECT",
+      "authUrl": "https://accounts.google.com/o/oauth2/v2/auth",
+      "tokenUrl": "https://oauth2.googleapis.com/token",
+      "scopes": "https://www.googleapis.com/auth/spreadsheets",
+      "redirectUri": "http://localhost:3000/apiblock",
+      "fields": [
+        {
+          "label": "Client ID",
+          "key": "clientId",
+          "type": "text",
+          "required": true
+        },
+        {
+          "label": "Secret ID",
+          "key": "secretId",
+          "type": "text",
+          "required": true
+        },
+        {
+          "label": "Spread Sheet ID",
+          "key": "spreadsheetId",
+          "type": "text",
+          "required": true
+        }
+      ]
+    },
+    "inputs": [
+      {
+        "label": "Name",
+        "key": "name",
+        "type": "text",
+        "required": true
+      },
+      {
+        "label": "Email",
+        "key": "email",
+        "type": "email",
+        "required": false
+      },
+      {
+        "label": "Additional Info",
+        "key": "jsonview",
+        "type": "json",
+        "required": false,
+        "description": "Provide structured data in JSON format."
+      },
+      {
+        "label": "Key",
+        "key": "Key",
+        "type": "text",
+        "required": false,
+        "description": "Select attribute and provide its value."
+      },
+      {
+        "label": "Value",
+        "key": "Value",
+        "type": "text",
+        "required": false,
+        "visible": true
+      }
+    ],
+    "output": {
+      "type": "table",
+      "fields": ["name", "email", "jsonview", "Key", "Value"],
+      "actions": ["delete", "edit"]
+    },
+    "baseurl": "http://localhost:5000",
+    "setupInstructions": {
+      "enabled": true,
+      "title": "Google Sheets API Setup Instructions",
+      "description": "To use this block, you must complete the following steps in your Google Cloud and Sheets accounts:",
+      "steps": [
+        {
+          "step": 1,
+          "title": "Create a Google Cloud Project",
+          "details": "Visit https://console.cloud.google.com/, create a new project (or select an existing one), and note its name."
+        },
+        {
+          "step": 2,
+          "title": "Enable the Google Sheets API",
+          "details": "In the Cloud Console API Library, search for 'Google Sheets API' and enable it for your project."
+        },
+        {
+          "step": 3,
+          "title": "Create OAuth 2.0 Credentials",
+          "details": "Go to 'APIs & Services > Credentials', click 'Create Credentials' → 'OAuth Client ID'. Choose 'Web application' and set the Authorized Redirect URI to http://localhost:3000/apiblock."
+        },
+        {
+          "step": 4,
+          "title": "Copy Client ID and Secret",
+          "details": "After creation, copy the Client ID and Client Secret and enter them into the authentication form on this block."
+        },
+        {
+          "step": 5,
+          "title": "Create or Open Your Google Sheet",
+          "details": "Go to Google Sheets and create a new sheet (or open an existing one)."
+        },
+        {
+          "step": 6,
+          "title": "Obtain the Spreadsheet ID",
+          "details": "In your sheet's URL (e.g. https://docs.google.com/spreadsheets/d/**YOUR_SPREADSHEET_ID**/edit), copy the portion between '/d/' and '/edit' and paste it into the 'Spreadsheet ID' field above."
+        },
+        {
+          "step": 7,
+          "title": "Grant Access (If Needed)",
+          "details": "Ensure that the Google account you use for OAuth has edit access to the spreadsheet, or share the sheet with that account."
+        }
+      ]
+    }
+  }
+]

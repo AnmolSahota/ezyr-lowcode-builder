@@ -1,0 +1,469 @@
+[
+  {
+    "id": "airtable-crud",
+    "name": "Airtable CRUD",
+    "service": "Airtable",
+    "servicecode": "airtable",
+    "description": "List, Add, Edit, Delete records in a selected Airtable base and table.",
+    "auth": {
+      "type": "API_KEY",
+      "flow": "MANUAL",
+      "fields": [
+        {
+          "label": "API Key",
+          "key": "apiKey",
+          "type": "password",
+          "required": true
+        }
+      ]
+    },
+    "inputs": [
+      {
+        "label": "Base",
+        "key": "baseId",
+        "type": "dynamic_dropdown",
+        "required": true,
+        "dataSource": {
+          "url": "https://api.airtable.com/v0/meta/bases",
+          "labelField": "name",
+          "valueField": "id"
+        }
+      },
+      {
+        "label": "Table",
+        "key": "tableName",
+        "type": "dynamic_dropdown",
+        "required": true,
+        "dependsOn": "baseId",
+        "dataSource": {
+          "url": "https://api.airtable.com/v0/meta/bases/{baseId}/tables",
+          "labelField": "name",
+          "valueField": "name"
+        }
+      },
+      {
+        "label": "Name",
+        "key": "Name",
+        "type": "text",
+        "required": true
+      },
+      {
+        "label": "Email",
+        "key": "Email",
+        "type": "email",
+        "required": true
+      },
+      {
+        "label": "Age",
+        "key": "Age",
+        "type": "number",
+        "required": true
+      },
+      {
+        "label": "Date",
+        "key": "Date",
+        "type": "Date",
+        "required": true
+      }
+    ],
+    "output": {
+      "type": "table",
+      "fields": ["Name", "Email", "Age", "Date"],
+      "actions": ["delete", "edit"]
+    },
+    "baseurl": "https://api.airtable.com/v0",
+    "operations": {
+      "fetch": {
+        "method": "GET",
+        "url": "{baseurl}/{baseId}/{tableName}",
+        "urlParams": ["baseId", "tableName"],
+        "requiredFields": ["baseId", "tableName"],
+        "responseField": "records",
+        "authMethod": "header",
+        "authField": "apiKey"
+      },
+      "create": {
+        "method": "POST",
+        "url": "{baseurl}/{baseId}/{tableName}",
+        "urlParams": ["baseId", "tableName"],
+        "payload": {
+          "fields": "{dataFields}"
+        },
+        "authMethod": "header",
+        "authField": "apiKey"
+      },
+      "update": {
+        "method": "PATCH",
+        "url": "{baseurl}/{baseId}/{tableName}/{recordId}",
+        "urlParams": ["baseId", "tableName", "recordId"],
+        "payload": {
+          "fields": "{dataFields}"
+        },
+        "authMethod": "header",
+        "authField": "apiKey"
+      },
+      "delete": {
+        "method": "DELETE",
+        "url": "{baseurl}/{baseId}/{tableName}/{recordId}",
+        "urlParams": ["baseId", "tableName", "recordId"],
+        "authMethod": "header",
+        "authField": "apiKey"
+      }
+    }
+  },
+  {
+    "id": "airtable-keyvalue",
+    "name": "Airtable Key-Value Store",
+    "service": "Airtable",
+    "servicecode": "airtable-kv",
+    "description": "Store and manage key-value pairs in Airtable with Key and Value columns.",
+    "auth": {
+      "type": "API_KEY",
+      "flow": "MANUAL",
+      "fields": [
+        {
+          "label": "API Key",
+          "key": "apiKey",
+          "type": "password",
+          "required": true
+        }
+      ]
+    },
+    "inputs": [
+      {
+        "label": "Base",
+        "key": "baseId",
+        "type": "dynamic_dropdown",
+        "required": true,
+        "dataSource": {
+          "url": "https://api.airtable.com/v0/meta/bases",
+          "labelField": "name",
+          "valueField": "id"
+        }
+      },
+      {
+        "label": "Table",
+        "key": "tableName",
+        "type": "dynamic_dropdown",
+        "required": true,
+        "dependsOn": "baseId",
+        "dataSource": {
+          "url": "https://api.airtable.com/v0/meta/bases/{baseId}/tables",
+          "labelField": "name",
+          "valueField": "name"
+        }
+      },
+      {
+        "label": "Key",
+        "key": "Key",
+        "type": "text",
+        "required": true,
+        "placeholder": "e.g., user_preference, app_setting"
+      },
+      {
+        "label": "Value",
+        "key": "Value",
+        "type": "textarea",
+        "required": true,
+        "placeholder": "Enter the value (can be JSON, text, etc.)"
+      },
+      {
+        "label": "Description",
+        "key": "Description",
+        "type": "text",
+        "required": false,
+        "placeholder": "Optional description of this key-value pair"
+      }
+    ],
+    "output": {
+      "type": "table",
+      "fields": ["Key", "Value", "Description"],
+      "actions": ["delete", "edit"]
+    },
+    "baseurl": "https://api.airtable.com/v0",
+    "operations": {
+      "fetch": {
+        "method": "GET",
+        "url": "{baseurl}/{baseId}/{tableName}",
+        "urlParams": ["baseId", "tableName"],
+        "requiredFields": ["baseId", "tableName"],
+        "responseField": "records",
+        "authMethod": "header",
+        "authField": "apiKey"
+      },
+      "create": {
+        "method": "POST",
+        "url": "{baseurl}/{baseId}/{tableName}",
+        "urlParams": ["baseId", "tableName"],
+        "payload": {
+          "fields": "{dataFields}"
+        },
+        "authMethod": "header",
+        "authField": "apiKey"
+      },
+      "update": {
+        "method": "PATCH",
+        "url": "{baseurl}/{baseId}/{tableName}/{recordId}",
+        "urlParams": ["baseId", "tableName", "recordId"],
+        "payload": {
+          "fields": "{dataFields}"
+        },
+        "authMethod": "header",
+        "authField": "apiKey"
+      },
+      "delete": {
+        "method": "DELETE",
+        "url": "{baseurl}/{baseId}/{tableName}/{recordId}",
+        "urlParams": ["baseId", "tableName", "recordId"],
+        "authMethod": "header",
+        "authField": "apiKey"
+      },
+      "getByKey": {
+        "method": "GET",
+        "url": "{baseurl}/{baseId}/{tableName}?filterByFormula=Key='{key}'",
+        "urlParams": ["baseId", "tableName", "key"],
+        "requiredFields": ["baseId", "tableName", "key"],
+        "responseField": "records",
+        "authMethod": "header",
+        "authField": "apiKey"
+      }
+    }
+  },
+  {
+    "id": "gmail_search_emails",
+    "name": "Gmail Search Emails",
+    "description": "Search for emails in your Gmail account",
+    "service": "gmail",
+    "servicecode": "gmail",
+    "auth": {
+      "type": "OAUTH2",
+      "flow": "REDIRECT",
+      "authUrl": "https://accounts.google.com/o/oauth2/v2/auth",
+      "tokenUrl": "https://oauth2.googleapis.com/token",
+      "scopes": "https://www.googleapis.com/auth/gmail.readonly",
+      "redirectUri": "http://localhost:3000/apiblock",
+      "fields": [
+        {
+          "label": "Client ID",
+          "key": "clientId",
+          "type": "text",
+          "required": true
+        }
+      ]
+    },
+    "inputs": [
+      {
+        "name": "query",
+        "key": "query",
+        "label": "Search Query",
+        "type": "text",
+        "required": true
+      }
+    ],
+    "output": {
+      "type": "table",
+      "fields": ["From", "Subject", "Date"]
+    },
+    "baseurl": "http://localhost:5000",
+    "operations": {
+      "fetch": {
+        "method": "POST",
+        "url": "{baseurl}/gmail/search",
+        "payload": {
+          "access_token": "{access_token}",
+          "query": "{query}"
+        },
+        "responseField": "records",
+        "authMethod": "payload",
+        "authField": "access_token"
+      }
+    }
+  },
+  {
+    "id": "google-sheets-crud",
+    "name": "Google Sheets Manager",
+    "service": "GoogleSheets",
+    "servicecode": "googlesheets",
+    "description": "List, Add, Edit, Delete entries in a Google Spreadsheet.",
+    "auth": {
+      "type": "OAUTH2",
+      "flow": "REDIRECT",
+      "authUrl": "https://accounts.google.com/o/oauth2/v2/auth",
+      "tokenUrl": "https://oauth2.googleapis.com/token",
+      "scopes": "https://www.googleapis.com/auth/spreadsheets",
+      "redirectUri": "http://localhost:3000/apiblock",
+      "fields": [
+        {
+          "label": "Client ID",
+          "key": "clientId",
+          "type": "text",
+          "required": true
+        }
+      ]
+    },
+    "inputs": [
+      {
+        "label": "Name",
+        "key": "name",
+        "type": "text",
+        "required": true
+      },
+      {
+        "label": "Email",
+        "key": "email",
+        "type": "email",
+        "required": true
+      }
+    ],
+    "output": {
+      "type": "table",
+      "fields": ["name", "email"],
+      "actions": ["delete", "edit"]
+    },
+    "baseurl": "http://localhost:5000",
+    "operations": {
+      "fetch": {
+        "method": "GET",
+        "url": "{baseurl}/get-entries",
+        "responseField": "data",
+        "authMethod": "header",
+        "authField": "access_token",
+        "dataTransform": "googleSheets"
+      },
+      "create": {
+        "method": "POST",
+        "url": "{baseurl}/add-entry",
+        "payload": {
+          "access_token": "{access_token}",
+          "values": "{valuesArray}"
+        },
+        "authMethod": "payload",
+        "authField": "access_token"
+      },
+      "update": {
+        "method": "PUT",
+        "url": "{baseurl}/update-entry",
+        "payload": {
+          "access_token": "{access_token}",
+          "rowIndex": "{recordId}",
+          "values": "{valuesArray}"
+        },
+        "authMethod": "payload",
+        "authField": "access_token"
+      },
+      "delete": {
+        "method": "DELETE",
+        "url": "{baseurl}/delete-entry",
+        "payload": {
+          "access_token": "{access_token}",
+          "rowIndex": "{recordId}"
+        },
+        "authMethod": "payload",
+        "authField": "access_token"
+      }
+    }
+  },
+  {
+    "id": "google-sheets-keyvalue",
+    "name": "Google Sheets Key-Value Store",
+    "service": "GoogleSheets",
+    "servicecode": "googlesheets-kv",
+    "description": "Store and manage key-value pairs in Google Sheets with Key and Value columns.",
+    "auth": {
+      "type": "OAUTH2",
+      "flow": "REDIRECT",
+      "authUrl": "https://accounts.google.com/o/oauth2/v2/auth",
+      "tokenUrl": "https://oauth2.googleapis.com/token",
+      "scopes": "https://www.googleapis.com/auth/spreadsheets",
+      "redirectUri": "http://localhost:3000/apiblock",
+      "fields": [
+        {
+          "label": "Client ID",
+          "key": "clientId",
+          "type": "text",
+          "required": true
+        }
+      ]
+    },
+    "inputs": [
+      {
+        "label": "Key",
+        "key": "key",
+        "type": "text",
+        "required": true,
+        "placeholder": "e.g., user_preference, app_setting"
+      },
+      {
+        "label": "Value",
+        "key": "value",
+        "type": "textarea",
+        "required": true,
+        "placeholder": "Enter the value (can be JSON, text, etc.)"
+      },
+      {
+        "label": "Description",
+        "key": "description",
+        "type": "text",
+        "required": false,
+        "placeholder": "Optional description of this key-value pair"
+      }
+    ],
+    "output": {
+      "type": "table",
+      "fields": ["key", "value", "description"],
+      "actions": ["delete", "edit"]
+    },
+    "baseurl": "http://localhost:5000",
+    "operations": {
+      "fetch": {
+        "method": "GET",
+        "url": "{baseurl}/get-entries",
+        "responseField": "data",
+        "authMethod": "header",
+        "authField": "access_token",
+        "dataTransform": "googleSheets"
+      },
+      "create": {
+        "method": "POST",
+        "url": "{baseurl}/add-entry",
+        "payload": {
+          "access_token": "{access_token}",
+          "values": "{valuesArray}"
+        },
+        "authMethod": "payload",
+        "authField": "access_token"
+      },
+      "update": {
+        "method": "PUT",
+        "url": "{baseurl}/update-entry",
+        "payload": {
+          "access_token": "{access_token}",
+          "rowIndex": "{recordId}",
+          "values": "{valuesArray}"
+        },
+        "authMethod": "payload",
+        "authField": "access_token"
+      },
+      "delete": {
+        "method": "DELETE",
+        "url": "{baseurl}/delete-entry",
+        "payload": {
+          "access_token": "{access_token}",
+          "rowIndex": "{recordId}"
+        },
+        "authMethod": "payload",
+        "authField": "access_token"
+      },
+      "getByKey": {
+        "method": "POST",
+        "url": "{baseurl}/get-by-key",
+        "payload": {
+          "access_token": "{access_token}",
+          "key": "{key}"
+        },
+        "authMethod": "payload",
+        "authField": "access_token"
+      }
+    }
+  }
+]

@@ -1,0 +1,1 @@
+export let backendbaseUrl = 'http://localhost:5000'
